@@ -21,11 +21,19 @@
 #include <sys/mman.h>
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
+#include <mach-o/fat.h>
 #include <sys/stat.h>
 
+#include <stdint.h>
+#include <mach/machine.h>
+#include <architecture/byte_order.h>
 
-
-
+typedef struct		s_nm
+{
+	int				fd;
+	struct stat		file_stat;
+	char			*file_ptr;
+}					t_nm;
 
 /*
 ** Function prototypes
@@ -44,6 +52,15 @@ int		parse_args(char **argv);
 /*
 **	Nm functions
 */
-int		try_file_description(char **argv);
+int		try_file_description(t_nm *nm, char **argv);
+
+void	handle_64bin(t_nm *nm, char *file_ptr);
+void	print_symbols(int nsyms, int symoff, int stroff, char *ptr);
+
+
+/*
+** Utils
+*/
+void	to_hex(char *buffer, size_t size, unsigned n);
 
 #endif
