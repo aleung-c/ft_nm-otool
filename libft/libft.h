@@ -42,6 +42,7 @@ void		ft_putendl_fd(char const *s, int fd);
 void		ft_putnbr(int n);
 void		ft_putnbr_fd(int n, int fd);
 void		ft_putstr(char const *s);
+void		ft_putnstr(char const *str, int n);
 void		ft_putstr_fd(char const *s, int fd);
 char		*ft_realloc(char *str, size_t size);
 char		*ft_strcat(char *s1, const char *s2);

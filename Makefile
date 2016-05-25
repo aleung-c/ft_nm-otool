@@ -25,12 +25,11 @@ LIB = ./libft/
 
 CC = gcc -g -Wall -Werror -Wextra
 
+all : Lib $(NAME1) 
 
 
 $(NAME1) : $(OBJ)
 	$(CC) -o $(NAME1) $(OBJ) -L./libft/ -lft
-
-all : Lib $(NAME1) 
 
 Lib :
 	make -C $(LIB)

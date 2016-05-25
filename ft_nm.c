@@ -53,9 +53,21 @@ void	print_symbols(int nsyms, int symoff, int stroff, char *ptr)
 	i = 0;
 	while (i < nsyms)
 	{
+		// print value
 		to_hex(output, 12, list[i].n_value);
 		ft_putstr(output);
 		ft_putstr(" ");
+		// print type
+		if ((list[i].n_type & N_TYPE) == N_UNDF)
+			ft_putstr(" U "); // undefined
+		else if ((list[i].n_type & N_TYPE) == N_ABS)
+			ft_putstr(" A "); // absolute
+		else if ((list[i].n_type & N_TYPE) == N_SECT)
+			ft_putstr(" TOCHECK "); // need to go check the section.
+		else
+			ft_putstr(" S "); // in an uninitialized data section.
+
+		// print symbol name;
 		ft_putstr(string_table + list[i].n_un.n_strx);
 		ft_putchar('\n');
 		i++;
@@ -109,7 +121,14 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 	if (nm)
 	{}
 
+	ft_putstr("Size of unint :");
+	ft_putnbr(sizeof(unsigned int));
+	ft_putchar('\n');
 	magic_number = *(unsigned int *)file_ptr;
+	ft_putstr("magic_str 8bits: ");
+	ft_putnstr(file_ptr, 8);
+	ft_putchar('\n');
+
 	if (magic_number == MH_MAGIC_64)
 	{
 		// 64bit exec file;
@@ -125,14 +144,19 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 	{
 		ft_putendl("bin dynamic lib");
 	}
-	else if (magic_number == FAT_MAGIC || magic_number == FAT_CIGAM)
+	else if (magic_number == FAT_MAGIC)
 	{
 		// fat file.
 		ft_putendl("bin fat");
 	}
-	else if (magic_number == MH_SPLIT_SEGS)
+	else if (magic_number == FAT_CIGAM)
 	{
-		ft_putendl("multiple segs");
+		// fat file endian reversed.
+		ft_putendl("bin fat cigam");
+	}
+	else if (ft_memcmp(file_ptr, "!<arch>\n", 8) == 0)
+	{
+		ft_putendl("Lib");
 	}
 	else // ???
 	{
