@@ -19,7 +19,8 @@
 #include "libft/libft.h"
 
 #include <sys/mman.h>
-#include <mach-o/loader.h>
+#include <sys/cdefs.h>
+#include <mach-o/loader.h>				
 #include <mach-o/nlist.h>
 
 #include <mach-o/fat.h>
@@ -56,12 +57,14 @@ int		parse_args(char **argv);
 int		try_file_description(t_nm *nm, char **argv);
 
 void	handle_64bin(t_nm *nm, char *file_ptr);
-void	print_symbols(int nsyms, int symoff, int stroff, char *ptr);
+void	print_symbols(struct load_command *lc, int nsyms,
+						int symoff, int stroff, char *ptr);
 
 
 /*
 ** Utils
 */
 void	to_hex(char *buffer, size_t size, unsigned n);
+void	print_format_hex_address(char *output);
 
 #endif

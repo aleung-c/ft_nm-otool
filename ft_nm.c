@@ -12,58 +12,90 @@
 
 #include "ft_nm_otool.h"
 
-void	to_hex(char *buffer, size_t size, unsigned n)
+char get_symbol_section_type_64(int section_nb, char *file_ptr)
 {
-	size_t		i;
-	size_t		j;
-	char		c;
-	unsigned	digit;
+	struct mach_header_64		*file_header;
+	struct load_command			*lc;
+	struct segment_command_64	*sc;
+	struct section_64			*sect;
+	unsigned int				i;
+	unsigned int				y;
+	int							section_counter;
 
+	file_header = (struct mach_header_64 *)file_ptr;
+	lc = (void *)file_ptr + sizeof(*file_header); // move past the header.
 	i = 0;
-	while (i < size)
+	section_counter = 0;
+	// run through all loads commands.
+	while (i < file_header->ncmds)
 	{
-		digit = n & 0xf;
-		buffer[i] = digit < 10 ? digit + '0' : digit - 10 + 'a';
-		n >>= 4;
-		if (n == 0)
-			break ;
+		if (lc->cmd == LC_SEGMENT_64) // only segments can be casted.
+		{
+			sc = (struct segment_command_64 *)lc;
+			sect = (struct section_64 *)((char *)sc + sizeof(struct segment_command_64));
+			y = 0;
+			if (sc->nsects != 0)
+			{
+				while (y < sc->nsects)
+				{
+					section_counter += 1;
+					if (section_counter == section_nb)
+					{
+						// reached asked section.
+						if (ft_strcmp(sect->segname, "__TEXT") == 0)
+							return ('T');
+						else if (ft_strcmp(sect->segname, "__DATA") == 0)
+							return ('D');
+					}
+					// goto next section;
+					sect = (struct section_64 *)((char *)sect + sizeof(struct section_64));
+					y++;
+				}
+			}
+		}
+		lc = (void *)lc + lc->cmdsize;
 		i++;
 	}
-	buffer[i + 1] = 0;
-	j = 0;
-	while (j < i / 2)
-	{
-		c = buffer[j];
-		buffer[j] = buffer[i - j];
-		buffer[i - j] = c;
-		++j;
-	}
+	return ('S');
 }
 
-
-void	print_symbols(int nsyms, int symoff, int stroff, char *ptr)
+void	print_symbols(struct load_command *lc, int nsyms, int symoff, int stroff, char *ptr)
 {
-	int					i;
-	struct nlist_64		*list;
-	char				*string_table;
-	char				output[12];
+	int							i;
+	struct nlist_64				*list;
+	char						*string_table;
+	char						output[16];
+	
+	if (lc)
+	{}
 
 	list = (void *)ptr + symoff;
 	string_table = (void *)ptr + stroff;
 	i = 0;
+
 	while (i < nsyms)
 	{
 		// print value
-		to_hex(output, 12, list[i].n_value);
-		ft_putstr(output);
-		ft_putstr(" ");
+		if (list[i].n_value != 0x0)
+		{
+			to_hex(output, 16, list[i].n_value);
+			print_format_hex_address(output);
+			ft_putstr(" ");
+		}
+		else
+		{
+			ft_putstr("                ");
+		}
 		// print type
 		if ((list[i].n_type & N_TYPE) == N_UNDF)
 			ft_putstr(" U "); // undefined
 		else if ((list[i].n_type & N_TYPE) == N_ABS)
 			ft_putstr(" A "); // absolute
 		else if ((list[i].n_type & N_TYPE) == N_SECT)
-			ft_putstr(" TOCHECK "); // need to go check the section.
+		{
+			ft_putchar(get_symbol_section_type_64(list[i].n_sect, ptr)); // need to go check the section.
+			ft_putstr(" ");
+		}
 		else
 			ft_putstr(" S "); // in an uninitialized data section.
 
@@ -76,24 +108,58 @@ void	print_symbols(int nsyms, int symoff, int stroff, char *ptr)
 
 void	handle_64bin(t_nm *nm, char *file_ptr)
 {
-	struct mach_header_64	*file_header;
-	struct symtab_command	*symtab;
-	struct load_command		*lc;
-	int						ncmds;
-	int						i;
+	struct mach_header_64		*file_header;
+	struct symtab_command		*symtab;
+	struct load_command			*lc;
+	struct segment_command_64	*sc;
+	struct section_64			*sect;
+	int							ncmds;
+	int							i;
+	unsigned int				y;
 
 	if (nm)
 	{}
+	ft_putendl(" // DEBUG dump file ------- //");
 	file_header = (struct mach_header_64 *)file_ptr;
 	ncmds = file_header->ncmds;
-	ft_putstr("ncmds :");
+
+	/*ft_putstr("ncmds :");
 	ft_putnbr(ncmds);
-	ft_putchar('\n');
+	ft_putchar('\n');*/
+
 	lc = (void *)file_ptr + sizeof(*file_header); // move past the header.
 	i = 0;
 	// run through all loads commands.
 	while (i < ncmds)
 	{
+		if (lc->cmd == LC_SEGMENT_64) // only segments can be casted.
+		{
+			sc = (struct segment_command_64 *)lc;
+			if (!sc)
+				break;
+			ft_putstr("segname :");
+			ft_putstr(sc->segname);
+			ft_putchar('\n');
+
+			/*ft_putstr("seg->sect nb :");
+			ft_putnbr(sc->nsects);
+			ft_putchar('\n');*/
+
+			sect = (struct section_64 *)((char *)sc + sizeof(struct segment_command_64));
+			y = 0;
+			if (sc->nsects != 0)
+			{
+				while (y < sc->nsects)
+				{
+					ft_putstr("sectname :");
+					ft_putstr(sect->sectname);
+					ft_putchar('\n');
+					sect = (struct section_64 *)((char *)sect + sizeof(struct section_64));
+					y++;
+				}
+			}
+		}
+
 		// must find symbol tab load command;
 		if (lc->cmd == LC_SYMTAB)
 		{
@@ -102,8 +168,7 @@ void	handle_64bin(t_nm *nm, char *file_ptr)
 			ft_putstr("nb symbols :");
 			ft_putnbr(symtab->nsyms);
 			ft_putchar('\n');
-			print_symbols(symtab->nsyms, symtab->symoff, symtab->stroff, file_ptr);
-			break; // the rest is not needed right now;
+			print_symbols(lc, symtab->nsyms, symtab->symoff, symtab->stroff, file_ptr);
 		}
 		lc = (void *)lc + lc->cmdsize;
 		i++;
@@ -121,14 +186,7 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 	if (nm)
 	{}
 
-	ft_putstr("Size of unint :");
-	ft_putnbr(sizeof(unsigned int));
-	ft_putchar('\n');
 	magic_number = *(unsigned int *)file_ptr;
-	ft_putstr("magic_str 8bits: ");
-	ft_putnstr(file_ptr, 8);
-	ft_putchar('\n');
-
 	if (magic_number == MH_MAGIC_64)
 	{
 		// 64bit exec file;
@@ -160,7 +218,8 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 	}
 	else // ???
 	{
-		ft_putendl("unhandled file type");
+		ft_putendl("Unhandled file type");
+		return ;
 	}
 }
 

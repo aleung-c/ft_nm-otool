@@ -17,7 +17,8 @@ NAME2 = ft_otool
 
 HEADER = ft_nm_otool.h
 
-SRC = ft_nm.c
+SRC = ft_nm.c \
+utils.c
 
 OBJ = $(SRC:.c=.o)
 
