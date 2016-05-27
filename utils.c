@@ -67,3 +67,31 @@ void print_format_hex_address(char *output)
 		y++;
 	}
 }
+
+
+t_nm	*add_new_nm_file_to_list(t_nm *nm_list, t_nm *new_nm)
+{
+	t_nm	*tmp;
+
+	if (nm_list == NULL)
+	{
+		return (new_nm);
+	}
+	else
+	{
+		tmp = nm_list;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = new_nm;
+		return (nm_list);
+	}
+	return (nm_list);
+}
+
+unsigned int swap32(unsigned int x)
+{
+	return	((x << 24) & 0xff000000 ) |
+		((x <<  8) & 0x00ff0000 ) |
+		((x >>  8) & 0x0000ff00 ) |
+		((x >> 24) & 0x000000ff );
+}
