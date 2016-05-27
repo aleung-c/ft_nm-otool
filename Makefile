@@ -18,6 +18,10 @@ NAME2 = ft_otool
 HEADER = ft_nm_otool.h
 
 SRC = ft_nm.c \
+file_description.c \
+handle_64.c \
+handle_fat.c \
+display.c \
 utils.c
 
 OBJ = $(SRC:.c=.o)
