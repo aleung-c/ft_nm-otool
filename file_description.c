@@ -13,7 +13,7 @@
 #include "ft_nm_otool.h"
 
 /*
-**	Try opening and converting binary file to char *.
+**	Try opening and treating file. Main function
 */
 int		try_file_description(t_nm *nm_list, char **argv)
 {
@@ -35,7 +35,7 @@ int		try_file_description(t_nm *nm_list, char **argv)
 		 		//ft_putendl("File seems OK");
 		 		nm_list = add_new_nm_file_to_list(nm_list, new_nm);
 		 		nm_entry(new_nm, new_nm->file_ptr);
-		 		//nm_sort();
+		 		//nm_sort(new_nm);
 		 		nm_print(new_nm);
 		 	}
 		 	else

@@ -19,8 +19,10 @@ HEADER = ft_nm_otool.h
 
 SRC = ft_nm.c \
 file_description.c \
+handle_32.c \
 handle_64.c \
 handle_fat.c \
+nm_sort.c \
 display.c \
 utils.c
 

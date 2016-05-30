@@ -40,35 +40,6 @@ void	to_hex(char *buffer, size_t size, unsigned n)
 	}
 }
 
-void print_format_hex_address(char *output)
-{
-	int		output_length;
-	int		i;
-	int		y;
-
-	i = 0;
-	y = 0;
-	output_length = strlen(output);
-	while (y < 16)
-	{
-		if (y >= (16 - output_length) && output[i]) 
-		{
-			ft_putchar(output[i]);
-			i++;
-		}
-		else if (y == 7)
-		{
-			ft_putchar('1');
-		}
-		else
-		{
-			ft_putchar('0');
-		}
-		y++;
-	}
-}
-
-
 t_nm	*add_new_nm_file_to_list(t_nm *nm_list, t_nm *new_nm)
 {
 	t_nm	*tmp;
@@ -94,4 +65,25 @@ unsigned int swap32(unsigned int x)
 		((x <<  8) & 0x00ff0000 ) |
 		((x >>  8) & 0x0000ff00 ) |
 		((x >> 24) & 0x000000ff );
+}
+
+void	add_output_to_list(t_nm *nm, t_nm_output *new_output)
+{
+	t_nm_output			*tmp;
+
+	if (nm->output_list == NULL)
+		nm->output_list = new_output;
+	else
+	{
+		/*if (ft_strcmp(new_output->sym_str, nm->output_list->sym_str) < 0)
+		{
+			new_output->next = nm->output_list;
+			nm->output_list = new_output;
+			return ;
+		}*/			
+		tmp = nm->output_list;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = new_output;
+	}
 }

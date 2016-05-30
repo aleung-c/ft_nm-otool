@@ -16,24 +16,24 @@ void	handle_fat(t_nm *nm, char *file_ptr)
 {
 	struct fat_header		*fat_head;
 	struct fat_arch			*fat_arch_struct;
-	unsigned int			i;
 
 	fat_head = (struct fat_header *)file_ptr;
-	if (nm->is_reverse_fat_bin == 1)
-	{
-		// swap endian
-	}
-
-	i = 0;
-	ft_putstr("nb of fatarch :");
-	ft_putnbr(swap32(fat_head->nfat_arch));
-	ft_putchar('\n');
-
+	/*ft_putstr("nb of fatarch :");
+	ft_putnbr(fat_head->nfat_arch);
+	ft_putchar('\n');*/
 	fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
-	while (i < swap32(fat_head->nfat_arch))
-	{
-		ft_putendl("fat arch");
-		fat_arch_struct = (void *)fat_arch_struct + sizeof(*fat_arch_struct);
-		i++;
-	}
+	nm_entry(nm, (void *)file_ptr + fat_arch_struct->offset);
+}
+
+void	handle_fat_cigam(t_nm *nm, char *file_ptr)
+{
+	struct fat_header		*fat_head;
+	struct fat_arch			*fat_arch_struct;
+
+	fat_head = (struct fat_header *)file_ptr;
+	/*ft_putstr("nb of fatarch :");
+	ft_putnbr(swap32(fat_head->nfat_arch));
+	ft_putchar('\n');*/
+	fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
+	nm_entry(nm, (void *)file_ptr + (swap32(fat_arch_struct->offset)));
 }
