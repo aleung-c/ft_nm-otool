@@ -13,19 +13,24 @@
 #ifndef		FT_NM_OTOOL_H
 # define	FT_NM_OTOOL_H
 
+
 #include <stdio.h> //
+
 
 #include "libft/libft.h"
 
+#include <stdint.h>
+
+#include <sys/stat.h>
 #include <sys/mman.h>
 #include <sys/cdefs.h>
+#include <ar.h>
+
+
 #include <mach-o/loader.h>				
 #include <mach-o/nlist.h>
-
 #include <mach-o/fat.h>
-#include <sys/stat.h>
-
-#include <stdint.h>
+#include <mach-o/ranlib.h>
 #include <mach/machine.h>
 #include <architecture/byte_order.h>
 
@@ -43,6 +48,8 @@ typedef struct			s_nm_output
 
 typedef struct			s_nm
 {
+	char				*str_label;
+	int 				is_ar_member;
 	int					fd;
 	struct stat			file_stat;
 	char				*file_ptr;
@@ -51,10 +58,9 @@ typedef struct			s_nm
 	struct s_nm_output	*output_list;
 	struct s_nm			*next;
 
-	// unused for now, doesnt look useful.
-	int					is_fat_bin;
-	int					is_reverse_fat_bin;
-	struct s_nm			*fat_childs;
+	int					is_ar;
+	char				*ar_name;
+	struct s_nm			*ar_childs;
 }						t_nm;
 
 /*
@@ -89,10 +95,16 @@ char					get_symbol_section_type_32(int section_nb, char *file_ptr);
 void					handle_fat(t_nm *nm, char *file_ptr);
 void					handle_fat_cigam(t_nm *nm, char *file_ptr);
 
+void					handle_ar(t_nm *nm, char *file_ptr);
+
 void					add_output_to_list(t_nm *nm, t_nm_output *new_output);
 
 void					nm_sort(t_nm *nm);
 
+/*
+** Display
+*/
+void					nm_print_from_list(t_nm *nm_list, int i);
 void					nm_print(t_nm	*nm);
 
 /*
@@ -102,5 +114,13 @@ void					to_hex(char *buffer, size_t size, unsigned n);
 void					print_format_hex_address(char *buffer, size_t size, long n);
 t_nm					*add_new_nm_file_to_list(t_nm *nm_list, t_nm *new_nm);
 unsigned int			swap32(unsigned int x);
+//long int				ft_strtol(char *line);
+int						str_to_int(char *val);
+
+/*
+**	Utils Lists
+*/
+int						count_nm_list_members(t_nm *nm_list);
+int						count_nm_outputs(t_nm *nm);
 
 #endif

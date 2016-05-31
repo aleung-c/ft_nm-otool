@@ -16,7 +16,19 @@
 void	nm_print(t_nm *nm)
 {
 	t_nm_output		*tmp;
+	//t_nm 			*tmp_ar;
 	char			buf[16];
+
+	// maybe ...
+	/*if (nm->is_ar == 1)
+	{
+		tmp_ar = nm->ar_childs;
+		while (tmp_ar != NULL)
+		{
+			nm_print(tmp_ar);
+			tmp_ar = tmp_ar->next;
+		}
+	}*/
 
 	if (nm->output_list == NULL)
 		return ;
@@ -72,5 +84,26 @@ void	print_format_hex_address(char *buffer, size_t size, long n)
 		write(1, &(buffer[i]), 1);
 		i--;
 		j++;
+	}
+}
+
+void		nm_print_from_list(t_nm *nm_list, int i)
+{
+	t_nm *tmp;
+
+	tmp = nm_list;
+	if (i > 1) 
+		ft_putchar('\n');
+	while (tmp)
+	{
+		if (i > 1) // TODO: dont display if fat bin;
+		{
+			ft_putstr(tmp->str_label);
+			ft_putendl(":");
+		}
+		nm_print(tmp);
+		if (i > 1) 
+			ft_putchar('\n');
+		tmp = tmp->next;
 	}
 }

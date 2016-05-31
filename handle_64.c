@@ -140,7 +140,7 @@ void	fill_outputs_64(t_nm *nm, int nsyms, int symoff, int stroff, char *file_ptr
 		to_hex(output, 16, list[i].n_value);
 		ft_memcpy(new_output->sym_output, output, 16);
 
-		// Print type
+		// get type
 		if ((list[i].n_type & N_TYPE) == N_UNDF)
 		{
 			if (list[i].n_value)

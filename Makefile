@@ -22,6 +22,7 @@ file_description.c \
 handle_32.c \
 handle_64.c \
 handle_fat.c \
+handle_ar.c \
 nm_sort.c \
 display.c \
 utils.c

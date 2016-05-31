@@ -23,7 +23,7 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 	if (magic_number == MH_MAGIC)
 	{
 		// 32bit exec file;
-		ft_putendl("bin 32bit");
+		//ft_putendl("bin 32bit");
 		handle_32(nm, file_ptr);
 	}
 	else if (magic_number == MH_MAGIC_64)
@@ -35,13 +35,13 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 	else if (magic_number == FAT_MAGIC)
 	{
 		// fat file.
-		ft_putendl("bin fat");
+		//ft_putendl("bin fat");
 		handle_fat(nm, file_ptr);
 	}
 	else if (magic_number == FAT_CIGAM)
 	{
 		// fat file endian reversed.
-		ft_putendl("bin fat cigam");
+		//ft_putendl("bin fat cigam");
 		handle_fat_cigam(nm, file_ptr);
 	}
 	else if (magic_number == MH_DYLIB)
@@ -50,15 +50,16 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 		ft_putendl("dyn lib");
 		handle_fat_cigam(nm, file_ptr);
 	}
-	else if (ft_memcmp(file_ptr, "!<arch>\n", 8) == 0)
+	else if (ft_memcmp(file_ptr, ARMAG, SARMAG) == 0)
 	{
 		ft_putendl("Lib");
+		handle_ar(nm, file_ptr);
 	}
-	else // ???
+	/*else // ???
 	{
 		ft_putendl("Unhandled file type");
 		return ;
-	}
+	}*/
 }
 
 /*
