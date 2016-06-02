@@ -41,6 +41,9 @@ int		try_file_description(t_nm *nm_list, char **argv)
 				//ft_putendl("File seems OK");
 				
 				nm_list = add_new_nm_file_to_list(nm_list, new_nm);
+				// display name of processed argument ?
+				/*ft_putstr("process: ");
+				ft_putendl(argv[i]);*/
 				nm_entry(new_nm, new_nm->file_ptr);
 				//nm_print(new_nm); // NOPE
 			}
@@ -64,6 +67,5 @@ int		try_file_description(t_nm *nm_list, char **argv)
 		i++;
 	}
 	nm_print_from_list(nm_list, i);
-
 	return (0);
 }

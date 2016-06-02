@@ -41,6 +41,7 @@ void	handle_fat(t_nm *nm, char *file_ptr)
 		i++;
 	}
 	// else default == first arch;
+	fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
 	nm_entry(nm, (void *)file_ptr + fat_arch_struct->offset);
 }
 
@@ -73,5 +74,6 @@ void	handle_fat_cigam(t_nm *nm, char *file_ptr) // TODO : ne fonctionne pas.
 	}
 	// else default == first arch;
 	//fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
-	nm_entry(nm, (void *)file_ptr + (swap32(fat_arch_struct->offset)));
+	fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
+	nm_entry(nm, (void *)file_ptr + (swap32(fat_arch_struct->offset))); // boucle segfault sur certains bins.
 }

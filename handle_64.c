@@ -158,10 +158,11 @@ void	fill_outputs_64(t_nm *nm, int nsyms, int symoff, int stroff, char *file_ptr
 			new_output->sym_type = get_symbol_section_type_64(list[i].n_sect, file_ptr);
 		if ((list[i].n_type & N_STAB) != 0)
 			new_output->sym_type = 'Z';
-		if ((list[i].n_type & N_PEXT) != 0 || (list[i].n_type & N_EXT) == 0) // TODO : fonctionne pas.
+		if ((list[i].n_type & N_PEXT) != 0 || (list[i].n_type & N_EXT) == 0) // TODO : fonctionne pas tout le temps.
 			new_output->sym_type = ft_tolower(new_output->sym_type);
 		new_output->sym_str = ft_strdup(string_table + list[i].n_un.n_strx);
-		add_output_to_list(nm, new_output);
+		if (!(new_output->sym_type == 'Z') && !(new_output->sym_type == 'z')) // not adding z stuffs.
+			add_output_to_list(nm, new_output);
 		i++;
 	}
 }

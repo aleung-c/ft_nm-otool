@@ -41,25 +41,25 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 	else if (magic_number == FAT_CIGAM)
 	{
 		// fat file endian reversed.
-		ft_putendl("bin fat cigam");
+		//ft_putendl("bin fat cigam");
 		handle_fat_cigam(nm, file_ptr); // TODO : a check;
 	}
-/*	else if (magic_number == MH_DYLIB)
+	else if (magic_number == MH_DYLIB)
 	{
 		// fat file endian reversed.
 		ft_putendl("dyn lib");
-		handle_fat_cigam(nm, file_ptr);
-	}*/
+		handle_fat(nm, file_ptr);
+	}
 	else if (ft_memcmp(file_ptr, ARMAG, SARMAG) == 0)
 	{
 		//ft_putendl("Lib");
 		handle_ar(nm, file_ptr);
 	}
-	else // ???
+	/*else // ???
 	{
 		ft_putendl("Unhandled file type");
 		return ;
-	}
+	}*/
 }
 
 /*
@@ -69,13 +69,14 @@ void		parse_args(int argc, char **argv)
 {
 	if (argc == 1)
 	{
-		argv[1] = ft_strdup("a.out"); // bug. a revoir
+		argv[1] = ft_strdup("a.out");
+		argv[2] = NULL;
 	}
 }
 
 int		main(int argc, char **argv)
 {
-	t_nm	*nm_list; // file chained list;
+	t_nm	*nm_list;
 
 	nm_list = NULL;
 	parse_args(argc, argv);
