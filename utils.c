@@ -173,7 +173,19 @@ int 		count_nm_outputs(t_nm *nm)
 	return (i);
 }
 
+int 		check_is_nm_doublon(t_nm *new_nm, t_nm *nm_list)
+{
+	t_nm		*tmp;
 
+	tmp = nm_list;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->str_label, new_nm->str_label) == 0)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
 
 
 

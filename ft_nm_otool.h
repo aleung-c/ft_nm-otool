@@ -59,6 +59,7 @@ typedef struct			s_nm
 	struct s_nm			*next;
 
 	int					is_ar;
+	int 				is_fat;
 	char				*ar_name;
 	struct s_nm			*ar_childs;
 }						t_nm;
@@ -106,6 +107,9 @@ void					nm_sort(t_nm *nm);
 */
 void					nm_print_from_list(t_nm *nm_list, int i);
 void					nm_print(t_nm	*nm);
+void					print_value_or_not(t_nm_output *tmp, t_nm *nm);
+char					*clean_name(char *raw_name, int ext);
+void					print_sym_value(t_nm_output *tmp);
 
 /*
 ** Utils
@@ -122,5 +126,6 @@ int						str_to_int(char *val);
 */
 int						count_nm_list_members(t_nm *nm_list);
 int						count_nm_outputs(t_nm *nm);
+int						check_is_nm_doublon(t_nm *new_nm, t_nm *nm_list);
 
 #endif

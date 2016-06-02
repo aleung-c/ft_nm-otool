@@ -22,6 +22,7 @@ void	handle_fat(t_nm *nm, char *file_ptr)
 
 	i = 0;
 	fat_head = (struct fat_header *)file_ptr;
+	nm->is_fat = 1;
 	/*ft_putstr("nb of fatarch :");
 	ft_putnbr(fat_head->nfat_arch);
 	ft_putchar('\n');*/
@@ -43,7 +44,7 @@ void	handle_fat(t_nm *nm, char *file_ptr)
 	nm_entry(nm, (void *)file_ptr + fat_arch_struct->offset);
 }
 
-void	handle_fat_cigam(t_nm *nm, char *file_ptr)
+void	handle_fat_cigam(t_nm *nm, char *file_ptr) // TODO : ne fonctionne pas.
 {
 	struct fat_header		*fat_head;
 	struct fat_arch			*fat_arch_struct;
@@ -52,13 +53,14 @@ void	handle_fat_cigam(t_nm *nm, char *file_ptr)
 
 	i = 0;
 	fat_head = (struct fat_header *)file_ptr;
+	nm->is_fat = 1;
 	/*ft_putstr("nb of fatarch :");
 	ft_putnbr(swap32(fat_head->nfat_arch));
 	ft_putchar('\n');*/
 
 	// Search for 64 bit architecture.
 	fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
-	while (i < fat_head->nfat_arch)
+	while (i < swap32(fat_head->nfat_arch))
 	{
 		magic_number = *(unsigned int *)((void *)file_ptr + (swap32(fat_arch_struct->offset)));
 		if (magic_number == MH_MAGIC_64)
