@@ -44,12 +44,12 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 		//ft_putendl("bin fat cigam");
 		handle_fat_cigam(nm, file_ptr); // TODO : a check;
 	}
-	else if (magic_number == MH_DYLIB)
+	/*else if (magic_number == MH_DYLIB) // not working, use FAT_MAGIC instead.
 	{
-		// fat file endian reversed.
 		ft_putendl("dyn lib");
-		handle_fat(nm, file_ptr);
-	}
+		nm->is_dyld = 1;
+		handle_fat_cigam(nm, file_ptr);
+	}*/
 	else if (ft_memcmp(file_ptr, ARMAG, SARMAG) == 0)
 	{
 		//ft_putendl("Lib");

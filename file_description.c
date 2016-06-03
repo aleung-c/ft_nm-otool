@@ -31,6 +31,7 @@ int		try_file_description(t_nm *nm_list, char **argv)
 		new_nm->fd = open(argv[i], O_RDONLY);
 		new_nm->is_ar = 0;
 		new_nm->is_fat = 0;
+		new_nm->is_dyld = 0;
 		// check file description.
 		if (new_nm->fd >= 0)
 		{
@@ -45,25 +46,35 @@ int		try_file_description(t_nm *nm_list, char **argv)
 				/*ft_putstr("process: ");
 				ft_putendl(argv[i]);*/
 				nm_entry(new_nm, new_nm->file_ptr);
-				//nm_print(new_nm); // NOPE
 			}
 			else
 			{
-				ft_putendl("mmap error"); // when opening folder.
+				ft_putstr(argv[0]);
+				if (!argv[i])
+					ft_putstr(": ./a.out:");
+				else
+				{
+					ft_putstr(": ");
+					ft_putstr(argv[1]);
+				}
+				ft_putendl(": Is a directory or invalid file."); // when opening folder.
 				//return (-1);
 			}
 		}
 		else
 		{
-			ft_putendl("open error"); // file doesnt exist;
-			//return (-1);
-		}
+			ft_putstr(argv[i]);
+			if (!argv[1])
+				ft_putstr(": ./a.out:");
+			else
+			{
+				ft_putstr(": ");
+				ft_putstr(argv[i]);
+			}
+			ft_putendl(": No such file or directory.");
 		
-		if (munmap(new_nm->file_ptr, new_nm->file_stat.st_size) < 0)
-		{
-			ft_putendl("munmap error");
-			//return (-1);
-		}
+		}		
+		munmap(new_nm->file_ptr, new_nm->file_stat.st_size);
 		i++;
 	}
 	nm_print_from_list(nm_list, i);

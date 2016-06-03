@@ -103,9 +103,12 @@ void	fill_outputs_32(t_nm *nm, int nsyms, int symoff, int stroff, char *file_ptr
 			new_output->sym_type = get_symbol_section_type_32(list[i].n_sect, file_ptr);
 		if ((list[i].n_type & N_STAB) != 0)
 			new_output->sym_type = 'Z';
-		if ((list[i].n_type & N_PEXT) != 0 || (list[i].n_type & N_EXT) == 0) // TODO : fonctionne pas tout le temps.
-				new_output->sym_type = ft_tolower(new_output->sym_type);
+		if ((list[i].n_type & N_EXT) == 0)
+			new_output->sym_type = ft_tolower(new_output->sym_type);
 		new_output->sym_str = ft_strdup(string_table + list[i].n_un.n_strx);
+
+		//if (is_exceptional_global_symbol(nm, new_output->sym_type, new_output->sym_str))
+			//new_output->sym_type = ft_toupper(new_output->sym_type);
 		if (!(new_output->sym_type == 'Z') && !(new_output->sym_type == 'z')) // not adding z stuffs.
 			add_output_to_list(nm, new_output);
 		i++;
@@ -122,7 +125,8 @@ void handle_32(t_nm *nm, char *file_ptr)
 	
 	file_header = (struct mach_header *)file_ptr;
 	ncmds = file_header->ncmds;
-
+	if (file_header->filetype & MH_DYLIB)
+		nm->is_dyld = 1;
 	lc = (void *)file_ptr + sizeof(*file_header); // move past the header.
 	i = 0;
 	// run through all loads commands.
@@ -138,33 +142,3 @@ void handle_32(t_nm *nm, char *file_ptr)
 		i++;
 	}
 }
-
-// CIGAM
-
-/*void handle_32_cigam(t_nm *nm, char *file_ptr)
-{
-	struct mach_header			*file_header;
-	struct symtab_command		*symtab;
-	struct load_command			*lc;
-	int							ncmds;
-	int							i;
-	
-	file_header = (struct mach_header *)file_ptr;
-	ncmds = file_header->ncmds;
-
-	lc = (void *)file_ptr + sizeof(*file_header); // move past the header.
-	i = 0;
-	// run through all loads commands.
-	while (i < ncmds)
-	{
-		// must find symbol tab load command;
-		if (lc->cmd == LC_SYMTAB)
-		{
-			symtab = (struct symtab_command *)lc;
-			fill_outputs_32(nm, symtab->nsyms, symtab->symoff, symtab->stroff);
-		}
-		lc = (void *)lc + lc->cmdsize;
-		i++;
-	}
-}
-*/

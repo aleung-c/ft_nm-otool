@@ -25,7 +25,8 @@ handle_fat.c \
 handle_ar.c \
 nm_sort.c \
 display.c \
-utils.c
+utils.c \
+utils_symbols.c
 
 OBJ = $(SRC:.c=.o)
 

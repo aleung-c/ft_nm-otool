@@ -83,7 +83,7 @@ void	add_output_to_list(t_nm *nm, t_nm_output *new_output)
 			return ;
 		}
 		tmp = nm->output_list;
-		while (tmp->next && ft_strcmp(new_output->sym_str ,tmp->next->sym_str) > 0)
+		while (tmp->next && ft_strcmp(new_output->sym_str ,tmp->next->sym_str) >= 0)
 			tmp = tmp->next;
 		if (tmp->next)
 			new_output->next = tmp->next;

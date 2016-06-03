@@ -60,6 +60,7 @@ typedef struct			s_nm
 
 	int					is_ar;
 	int 				is_fat;
+	int					is_dyld;
 	char				*ar_name;
 	struct s_nm			*ar_childs;
 }						t_nm;
@@ -120,6 +121,12 @@ t_nm					*add_new_nm_file_to_list(t_nm *nm_list, t_nm *new_nm);
 unsigned int			swap32(unsigned int x);
 //long int				ft_strtol(char *line);
 int						str_to_int(char *val);
+int		nm_search_64(char *file_ptr);
+
+/*
+** Utils symbols
+*/
+int						is_exceptional_global_symbol(t_nm *nm, char sym_type, char *sym_str);
 
 /*
 **	Utils Lists

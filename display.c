@@ -73,7 +73,7 @@ void	print_value_or_not(t_nm_output *tmp, t_nm *nm)
 		|| (nm->is_ar_member 
 			&& (ft_strcmp(nm_name_cleaned, sym_str_cleaned) == 0))
 		|| (tmp->sym_type >= 'a' && tmp->sym_type <= 'z')
-		|| (nm->is_ar_member && tmp->sym_type == 'T'))
+		|| (tmp->sym_type == 'T'))
 		print_sym_value(tmp);
 	else
 	{
@@ -147,6 +147,8 @@ void		nm_print_from_list(t_nm *nm_list, int i)
 {
 	t_nm *tmp;
 
+	if (nm_list == NULL)
+		return ;
 	tmp = nm_list;
 	if (i > 2 || (i == 2 && tmp->is_ar == 1))
 		ft_putchar('\n');
