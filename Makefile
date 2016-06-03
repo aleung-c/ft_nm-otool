@@ -28,13 +28,16 @@ display.c \
 utils.c \
 utils_symbols.c
 
+SRC2 = ft_otool.c \
+file_description.c \
+
 OBJ = $(SRC:.c=.o)
 
 LIB = ./libft/
 
 CC = gcc -g -Wall -Werror -Wextra
 
-all : Lib $(NAME1) 
+all : Lib $(NAME1)
 
 
 $(NAME1) : $(OBJ)

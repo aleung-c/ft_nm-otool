@@ -38,13 +38,21 @@
 
 typedef struct			s_nm_output
 {
-	int					arch_type;
 	long				sym_value;
 	char				sym_output[16];
 	char				sym_type;
 	char 				*sym_str;
 	struct s_nm_output	*next;
 }						t_nm_output;
+
+typedef struct			s_otool_output
+{
+	long				sym_value;
+	char				sym_output[16];
+	char				sym_type;
+	char 				*sym_str;
+	struct s_nm_output	*next;
+}						t_otool_output;
 
 typedef struct			s_nm
 {
@@ -82,7 +90,7 @@ void					parse_args(int argc, char **argv);
 /*
 **	Nm functions
 */
-int						try_file_description(t_nm *nm, char **argv);
+int						ft_nm(t_nm *nm_list, char **argv);
 
 void					nm_entry(t_nm *nm, char *file_ptr);
 

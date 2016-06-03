@@ -42,7 +42,7 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 	{
 		// fat file endian reversed.
 		//ft_putendl("bin fat cigam");
-		handle_fat_cigam(nm, file_ptr); // TODO : a check;
+		handle_fat_cigam(nm, file_ptr);
 	}
 	/*else if (magic_number == MH_DYLIB) // not working, use FAT_MAGIC instead.
 	{
@@ -80,7 +80,7 @@ int		main(int argc, char **argv)
 
 	nm_list = NULL;
 	parse_args(argc, argv);
-	if (try_file_description(nm_list, argv) != 0)
+	if (ft_nm(nm_list, argv) != 0)
 		return (-1);
 	return (0);
 }

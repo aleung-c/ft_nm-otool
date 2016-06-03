@@ -15,7 +15,7 @@
 /*
 **	Try opening and treating file. Main function
 */
-int		try_file_description(t_nm *nm_list, char **argv)
+int		ft_nm(t_nm *nm_list, char **argv)
 {
 	t_nm	*new_nm;
 	int i;
@@ -23,7 +23,6 @@ int		try_file_description(t_nm *nm_list, char **argv)
 	i = 1;
 	while (argv[i])
 	{
-
 		new_nm = (t_nm *)malloc(sizeof(t_nm));
 		// set values
 		new_nm->str_label = ft_strdup(argv[i]);
@@ -80,3 +79,4 @@ int		try_file_description(t_nm *nm_list, char **argv)
 	nm_print_from_list(nm_list, i);
 	return (0);
 }
+
