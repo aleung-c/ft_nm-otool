@@ -112,6 +112,15 @@ void					add_output_to_list(t_nm *nm, t_nm_output *new_output);
 void					nm_sort(t_nm *nm);
 
 /*
+**	Otool functions
+*/
+
+void					handle_32_otool(t_nm *nm, char *file_ptr);
+
+
+void					handle_64_otool(t_nm *nm, char *file_ptr);
+
+/*
 ** Display
 */
 void					nm_print_from_list(t_nm *nm_list, int i);
@@ -129,7 +138,7 @@ t_nm					*add_new_nm_file_to_list(t_nm *nm_list, t_nm *new_nm);
 unsigned int			swap32(unsigned int x);
 //long int				ft_strtol(char *line);
 int						str_to_int(char *val);
-int		nm_search_64(char *file_ptr);
+int						nm_search_64(char *file_ptr);
 
 /*
 ** Utils symbols

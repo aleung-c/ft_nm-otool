@@ -142,3 +142,8 @@ void handle_32(t_nm *nm, char *file_ptr)
 		i++;
 	}
 }
+
+void handle_32_otool(t_nm *nm, char *file_ptr)
+{
+	
+}

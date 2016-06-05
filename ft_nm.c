@@ -44,22 +44,11 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 		//ft_putendl("bin fat cigam");
 		handle_fat_cigam(nm, file_ptr);
 	}
-	/*else if (magic_number == MH_DYLIB) // not working, use FAT_MAGIC instead.
-	{
-		ft_putendl("dyn lib");
-		nm->is_dyld = 1;
-		handle_fat_cigam(nm, file_ptr);
-	}*/
 	else if (ft_memcmp(file_ptr, ARMAG, SARMAG) == 0)
 	{
 		//ft_putendl("Lib");
 		handle_ar(nm, file_ptr);
 	}
-	/*else // ???
-	{
-		ft_putendl("Unhandled file type");
-		return ;
-	}*/
 }
 
 /*
