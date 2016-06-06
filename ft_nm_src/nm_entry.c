@@ -17,8 +17,8 @@
 */
 int		ft_nm(t_nm *nm_list, char **argv)
 {
-	t_nm	*new_nm;
-	int i;
+	t_nm		*new_nm;
+	int			i;
 
 	i = 1;
 	while (argv[i])
@@ -29,6 +29,7 @@ int		ft_nm(t_nm *nm_list, char **argv)
 		new_nm->next = NULL;
 		new_nm->fd = open(argv[i], O_RDONLY);
 		new_nm->is_ar = 0;
+		new_nm->is_ar_member = 0;
 		new_nm->is_fat = 0;
 		new_nm->is_dyld = 0;
 		// check file description.
@@ -45,6 +46,7 @@ int		ft_nm(t_nm *nm_list, char **argv)
 				/*ft_putstr("process: ");
 				ft_putendl(argv[i]);*/
 				nm_entry(new_nm, new_nm->file_ptr);
+				// nm_print(new_nm); // nope, errors should have been implemented as outputs.
 			}
 			else
 			{
@@ -72,7 +74,7 @@ int		ft_nm(t_nm *nm_list, char **argv)
 			}
 			ft_putendl(": No such file or directory.");
 		
-		}		
+		}
 		munmap(new_nm->file_ptr, new_nm->file_stat.st_size);
 		i++;
 	}

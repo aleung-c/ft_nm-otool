@@ -31,6 +31,8 @@ SRC2 = ./ft_otool_src/ft_otool.c \
 ./ft_otool_src/otool_entry.c \
 ./ft_otool_src/handle_32_otool.c \
 ./ft_otool_src/handle_64_otool.c \
+./ft_otool_src/display_otool.c \
+./ft_otool_src/ot_list_utils.c \
 ./utils.c \
 ./utils_symbols.c
 

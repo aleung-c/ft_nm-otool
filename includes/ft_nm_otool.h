@@ -45,14 +45,15 @@ typedef struct			s_nm_output
 	struct s_nm_output	*next;
 }						t_nm_output;
 
-typedef struct			s_otool_output
+typedef struct			s_ot_output
 {
-	long				sym_value;
-	char				sym_output[16];
-	char				sym_type;
-	char 				*sym_str;
-	struct s_nm_output	*next;
-}						t_otool_output;
+	long				sect_addr;
+	char				seg_name[16];
+	char				sect_name[16];
+	unsigned int		sect_size;
+	char 				*sect_mem;
+	struct s_ot_output	*next;
+}						t_ot_output;
 
 typedef struct			s_nm
 {
@@ -67,6 +68,8 @@ typedef struct			s_nm
 	struct s_nm_output	*output_list;
 	struct s_nm			*next;
 
+	struct s_ot_output	*ot_output_list;
+	
 	int					is_ar;
 	int 				is_fat;
 	int					is_dyld;
@@ -124,6 +127,8 @@ void					handle_32_otool(t_nm *nm, char *file_ptr);
 
 
 void					handle_64_otool(t_nm *nm, char *file_ptr);
+void					fill_ot_output_64(t_nm *nm, struct section_64 *sect, char *ptr_to_text);
+void					add_ot_output_to_list(t_nm *nm, t_ot_output *new_output);
 
 /*
 ** Display
@@ -133,6 +138,10 @@ void					nm_print(t_nm	*nm);
 void					print_value_or_not(t_nm_output *tmp, t_nm *nm);
 char					*clean_name(char *raw_name, int ext);
 void					print_sym_value(t_nm_output *tmp, int arch_type);
+
+void					ot_print_from_list(t_nm *nm_list, int i);
+void					ot_print(t_nm	*tmp);
+void					ft_putnbytes(char *buffer, size_t size, unsigned int n);
 
 /*
 ** Utils
