@@ -26,7 +26,7 @@ void	fill_ot_output_64(t_nm *nm, struct section_64 *sect, char *ptr_to_text)
 	ft_memcpy(new_output->seg_name, sect->segname , 16);
 	new_output->sect_size = sect->size;
 	new_output->sect_mem = (char *)malloc(new_output->sect_size * sizeof(char));
-	ft_memcpy(new_output->sect_mem, &(*ptr_to_text), new_output->sect_size);
+	ft_memcpy(new_output->sect_mem, ptr_to_text, new_output->sect_size);
 	//new_output->sect_mem = ptr_to_text;
 	// i = 0;
 	// while (i < sect->size)

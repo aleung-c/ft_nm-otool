@@ -50,6 +50,8 @@ void ot_print_from_list(t_nm *nm_list, int i)
 	}
 }
 
+
+// TODO : valeurs se deplacent dans la memoire -> segfault. a check.
 void ot_print(t_nm	*nm)
 {
 	t_ot_output			*tmp;
@@ -72,11 +74,15 @@ void ot_print(t_nm	*nm)
 			sect_size_counter = 0;
 			while (sect_size_counter < sect_max_size)
 			{
-				ft_putendl("hey");
+				/*ft_putendl("hey ");
+				ft_putnbr(sect_size_counter);
+				ft_putchar('\n');
+				ft_putnbr(sect_max_size);*/
 				if (sect_size_counter % 16 == 0)
 				{
 					if (sect_size_counter != 0)
 						ft_putchar('\n');
+					// HERE BUG. V V
 					print_format_hex_address(buffer, 16, (unsigned long)((void *)tmp->sect_addr + sect_size_counter));
 					ft_putstr(" ");
 				}
@@ -85,8 +91,9 @@ void ot_print(t_nm	*nm)
 				//ft_putnbytes(buffer, 16, *(unsigned long *)(ptr_to_text + sizeof(unsigned long)));
 				//ft_putchar('\n');
 				ptr_to_text = (char *)ptr_to_text + 1;
-				sect_size_counter += (sizeof(char));			
+				sect_size_counter += 1;
 			}
+			ft_putendl("hey");
 			tmp = tmp->next;
 		}
 	}
