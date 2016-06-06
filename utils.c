@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm_otool.h"
+#include "./includes/ft_nm_otool.h"
 
 void	to_hex(char *buffer, size_t size, unsigned n)
 {

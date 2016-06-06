@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm_otool.h"
+#include "../includes/ft_nm_otool.h"
 #include <stdio.h> //
 
 // TODO : must display 000 hex add for the first elem...

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm_otool.h"
+#include "./includes/ft_nm_otool.h"
 
 /// Unused in the end.
 int		is_exceptional_global_symbol(t_nm *nm, char sym_type, char *sym_str)

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm_otool.h"
+#include "../includes/ft_nm_otool.h"
 #include <stdio.h> //
 
 void	nm_print(t_nm *nm)
@@ -74,21 +74,21 @@ void	print_value_or_not(t_nm_output *tmp, t_nm *nm)
 			&& (ft_strcmp(nm_name_cleaned, sym_str_cleaned) == 0))
 		|| (tmp->sym_type >= 'a' && tmp->sym_type <= 'z')
 		|| (tmp->sym_type == 'T'))
-		print_sym_value(tmp);
+		print_sym_value(tmp, nm->arch_type);
 	else
 	{
-		if (tmp->arch_type == 64)
+		if (nm->arch_type == 64)
 			ft_putstr("                ");
 		else
 			ft_putstr("        ");
 	}
 }
 
-void		print_sym_value(t_nm_output *tmp)
+void		print_sym_value(t_nm_output *tmp, int arch_type)
 {
 	char			buf[16];
 
-	if (tmp->arch_type == 64)
+	if (arch_type == 64)
 			print_format_hex_address(buf, 16, tmp->sym_value);
 		else
 			print_format_hex_address(buf, 8, tmp->sym_value);

@@ -17,7 +17,7 @@
 #include <stdio.h> //
 
 
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 #include <stdint.h>
 
@@ -56,6 +56,7 @@ typedef struct			s_otool_output
 
 typedef struct			s_nm
 {
+	int					arch_type;
 	char				*str_label;
 	int 				is_ar_member;
 	int					fd;
@@ -115,6 +116,10 @@ void					nm_sort(t_nm *nm);
 **	Otool functions
 */
 
+int						ft_otool(t_nm *nm_list, char **argv);
+
+void					otool_entry(t_nm *nm, char *file_ptr);
+
 void					handle_32_otool(t_nm *nm, char *file_ptr);
 
 
@@ -127,7 +132,7 @@ void					nm_print_from_list(t_nm *nm_list, int i);
 void					nm_print(t_nm	*nm);
 void					print_value_or_not(t_nm_output *tmp, t_nm *nm);
 char					*clean_name(char *raw_name, int ext);
-void					print_sym_value(t_nm_output *tmp);
+void					print_sym_value(t_nm_output *tmp, int arch_type);
 
 /*
 ** Utils

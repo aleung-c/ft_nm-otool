@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm_otool.h"
+#include "../includes/ft_nm_otool.h"
 #include <stdio.h>
 
 void	handle_fat(t_nm *nm, char *file_ptr)

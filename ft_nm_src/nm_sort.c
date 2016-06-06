@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm_otool.h"
+#include "../includes/ft_nm_otool.h"
 
 void nm_sort(t_nm *nm)
 {

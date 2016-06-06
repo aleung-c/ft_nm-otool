@@ -10,35 +10,41 @@
 #                                                                              #
 # **************************************************************************** #
 
-
 NAME1 = ft_nm
 
 NAME2 = ft_otool
 
-HEADER = ft_nm_otool.h
+HEADER = ./includes/ft_nm_otool.h
 
-SRC = ft_nm.c \
-file_description.c \
-handle_32.c \
-handle_64.c \
-handle_fat.c \
-handle_ar.c \
-nm_sort.c \
-display.c \
-utils.c \
-utils_symbols.c
+SRC = ./ft_nm_src/ft_nm.c \
+./ft_nm_src/nm_entry.c \
+./ft_nm_src/handle_32.c \
+./ft_nm_src/handle_64.c \
+./ft_nm_src/handle_fat.c \
+./ft_nm_src/handle_ar.c \
+./ft_nm_src/nm_sort.c \
+./ft_nm_src/display.c \
+./utils.c \
+./utils_symbols.c
 
-SRC2 = ft_otool.c \
-file_description.c \
+SRC2 = ./ft_otool_src/ft_otool.c \
+./ft_otool_src/otool_entry.c \
+./ft_otool_src/handle_32_otool.c \
+./ft_otool_src/handle_64_otool.c \
+./utils.c \
+./utils_symbols.c
 
 OBJ = $(SRC:.c=.o)
+OBJ2 = $(SRC2:.c=.o)
 
 LIB = ./libft/
 
 CC = gcc -g -Wall -Werror -Wextra
 
-all : Lib $(NAME1)
+all : Lib $(NAME1) $(NAME2)
 
+$(NAME2) : $(OBJ2)
+	$(CC) -o $(NAME2) $(OBJ2) -L./libft/ -lft
 
 $(NAME1) : $(OBJ)
 	$(CC) -o $(NAME1) $(OBJ) -L./libft/ -lft
@@ -48,10 +54,12 @@ Lib :
 
 clean :
 	rm -rf $(OBJ)
+	rm -rf $(OBJ2)
 	cd $(LIB) ; make clean
 
 fclean : clean
 	rm -rf $(NAME1)
+	rm -rf $(NAME2)
 	cd $(LIB) ; make fclean
 
 re : fclean all
