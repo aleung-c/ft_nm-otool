@@ -13,9 +13,7 @@
 #ifndef		FT_NM_OTOOL_H
 # define	FT_NM_OTOOL_H
 
-
 #include <stdio.h> //
-
 
 #include "../libft/libft.h"
 
@@ -77,6 +75,69 @@ typedef struct			s_nm
 	struct s_nm			*ar_childs;
 }						t_nm;
 
+typedef struct			s_ar_handler
+{
+	struct ar_hdr		*ar_header;
+	char 				*name;
+	int					ar_size;
+	int 				offset_size;
+	struct ranlib		*ran_lib;
+	unsigned int 		total_size_of_hdrs;
+
+	uint32_t 			i;
+}						t_ar_handler;
+
+typedef struct					s_bin32_handler
+{
+	struct mach_header			*file_header;
+	struct load_command			*lc;
+	struct segment_command		*sc;
+	int							ncmds;
+
+	struct symtab_command		*symtab;
+	int							nsyms;
+	int							symoff;
+	int							stroff;
+
+	struct nlist				*list;
+	//char						*string_table;
+
+	struct section				*sect;
+	int							section_counter;
+}								t_bin32_handler;
+
+typedef struct					s_bin64_handler
+{
+	struct mach_header_64		*file_header;
+	struct load_command			*lc;
+	struct segment_command_64	*sc;
+	int							ncmds;
+
+	struct symtab_command		*symtab;
+	int							nsyms;
+	int							symoff;
+	int							stroff;
+
+	struct nlist_64				*list;
+	//char						*string_table;
+
+	struct section_64			*sect;
+	int							section_counter;
+}								t_bin64_handler;
+
+typedef struct					s_fatbin_handler
+{
+	struct fat_header			*fat_head;
+	struct fat_arch				*fat_arch_struct;
+	unsigned int				magic_number;
+
+	
+	char						*sent_file_ptr;
+	struct ar_hdr				*ar_header;
+	unsigned int				ar_size;
+	unsigned int				offset_size;
+}								t_fatbin_handler;
+
 /*
 ** Function prototypes
 */
@@ -94,22 +155,32 @@ void					parse_args(int argc, char **argv);
 /*
 **	Nm functions
 */
-int						ft_nm(t_nm *nm_list, char **argv);
+int						ft_nm(t_nm *nm_list, char **argv, int i);
+t_nm					*create_new_nm(char **argv, int i);
+void					print_error(char **argv, int i, int error_type);
 
 void					nm_entry(t_nm *nm, char *file_ptr);
 
 void					handle_64(t_nm *nm, char *file_ptr);
-void					fill_outputs_64(t_nm *nm, int nsyms, int symoff, int stroff, char *file_ptr);
-char					get_symbol_section_type_64(int section_nb, char *file_ptr);
+void					fill_outputs_64(t_nm *nm, t_bin64_handler *b, char *file_ptr);
+char					get_symbol_type_64(t_bin64_handler *b, char *file_ptr, int i);
+char					get_symbol_section_type_64(t_bin64_handler *b, int section_nb,
+													char *file_ptr);
+char					get_symbol_type_sectioncmp_64(t_bin64_handler *b, int section_nb);
 
 void					handle_32(t_nm *nm, char *file_ptr);
-void					fill_outputs_32(t_nm *nm, int nsyms, int symoff, int stroff, char *file_ptr);
-char					get_symbol_section_type_32(int section_nb, char *file_ptr);
+void					fill_outputs_32(t_nm *nm, t_bin32_handler *b, char *file_ptr);
+char					get_symbol_type_32(t_bin32_handler *b, char *file_ptr, int i);
+char					get_symbol_section_type_32(t_bin32_handler *b, int section_nb, char *file_ptr);
+char					get_symbol_type_sectioncmp_32(t_bin32_handler *b, int section_nb);
 
 void					handle_fat(t_nm *nm, char *file_ptr);
 void					handle_fat_cigam(t_nm *nm, char *file_ptr);
-
+int						search_for_64_arch(t_fatbin_handler *b, char *sent_file_ptr, char *file_ptr);
+int						search_for_64_arch_cigam(t_fatbin_handler *b, char *sent_file_ptr, char *file_ptr);
 void					handle_ar(t_nm *nm, char *file_ptr);
+void					init_ar_handler(t_ar_handler *a, char *file_ptr);
+t_nm					*handle_ar_child(t_nm * nm, t_ar_handler *a);
 
 void					add_output_to_list(t_nm *nm, t_nm_output *new_output);
 
@@ -124,10 +195,18 @@ int						ft_otool(t_nm *nm_list, char **argv);
 void					otool_entry(t_nm *nm, char *file_ptr);
 
 void					handle_32_otool(t_nm *nm, char *file_ptr);
-
+void					fill_ot_output_32(t_nm *nm, struct section *sect, char *ptr_to_text);
 
 void					handle_64_otool(t_nm *nm, char *file_ptr);
 void					fill_ot_output_64(t_nm *nm, struct section_64 *sect, char *ptr_to_text);
+
+void					handle_fat_otool(t_nm *nm, char *file_ptr);
+void					handle_fat_cigam_otool(t_nm *nm, char *file_ptr);
+
+void					handle_ar_otool(t_nm *nm, char *file_ptr);
+void					init_ar_handler_otool(t_ar_handler *a, char *file_ptr);
+t_nm					*handle_ar_child_otool(t_nm *nm, t_ar_handler *a);
+
 void					add_ot_output_to_list(t_nm *nm, t_ot_output *new_output);
 
 /*
@@ -135,9 +214,11 @@ void					add_ot_output_to_list(t_nm *nm, t_ot_output *new_output);
 */
 void					nm_print_from_list(t_nm *nm_list, int i);
 void					nm_print(t_nm	*nm);
+void					nm_print_ar_label(t_nm *tmp);
 void					print_value_or_not(t_nm_output *tmp, t_nm *nm);
 char					*clean_name(char *raw_name, int ext);
 void					print_sym_value(t_nm_output *tmp, int arch_type);
+
 
 void					ot_print_from_list(t_nm *nm_list, int i);
 void					ot_print(t_nm	*tmp);

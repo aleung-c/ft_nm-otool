@@ -12,159 +12,111 @@
 
 #include "../includes/ft_nm_otool.h"
 
-/*void	debug_dump_file_sections_64(t_nm *nm, char *file_ptr)
+char	get_symbol_section_type_64(t_bin64_handler *b, int section_nb,
+									char *file_ptr)
 {
-	struct mach_header_64		*file_header;
-	struct load_command			*lc;
-	struct segment_command_64	*sc;
-	struct section_64			*sect;
-	int							ncmds;
-	int							i;
-	unsigned int				y;
+	unsigned int		i;
+	char				ret;
 
-	ft_putendl(" // DEBUG dump file ------- //");
-	file_header = (struct mach_header_64 *)file_ptr;
-	ncmds = file_header->ncmds;
-	lc = (void *)file_header + sizeof(*file_header);
-	ft_putstr("ncmds :");
-	ft_putnbr(ncmds);
-	ft_putchar('\n');
-
-	if (nm)
-	{
-	}
 	i = 0;
-	// run through all loads commands.
-	while (i < ncmds)
+	b->file_header = (struct mach_header_64 *)file_ptr;
+	b->lc = (void *)file_ptr + sizeof(*b->file_header);
+	b->section_counter = 0;
+	while (i < b->file_header->ncmds)
 	{
-		if (lc->cmd == LC_SEGMENT_64) // only segments can be casted.
+		if (b->lc->cmd == LC_SEGMENT_64)
 		{
-			sc = (struct segment_command_64 *)lc;
-
-			ft_putstr("segname :");
-			ft_putstr(sc->segname);
-			ft_putchar('\n');
-
-			ft_putstr("seg->sect nb :");
-			ft_putnbr(sc->nsects);
-			ft_putchar('\n');
-
-			sect = (struct section_64 *)((char *)sc + sizeof(struct segment_command_64));
-			y = 0;
-			if (sc->nsects != 0)
-			{
-				while (y < sc->nsects)
-				{
-					ft_putstr("sectname :");
-					ft_putstr(sect->sectname);
-					ft_putchar('\n');
-					sect = (struct section_64 *)((char *)sect + sizeof(struct section_64));
-					y++;
-				}
-			}
+			b->sc = (struct segment_command_64 *)b->lc;
+			b->sect = (struct section_64 *)((char *)b->sc
+					+ sizeof(struct segment_command_64));
+			ret = get_symbol_type_sectioncmp_64(b, section_nb);
+			if (ret != 0)
+				return (ret);
 		}
-	}
-}*/
-
-char get_symbol_section_type_64(int section_nb, char *file_ptr)
-{
-	struct mach_header_64		*file_header;
-	struct load_command			*lc;
-	struct segment_command_64	*sc;
-	struct section_64			*sect;
-	unsigned int				i;
-	unsigned int				y;
-	int							section_counter;
-
-	file_header = (struct mach_header_64 *)file_ptr;
-	lc = (void *)file_ptr + sizeof(*file_header); // move past the header.
-	i = 0;
-	section_counter = 0;
-	// run through all loads commands.
-	while (i < file_header->ncmds)
-	{
-		if (lc->cmd == LC_SEGMENT_64) // only segments can be casted.
-		{
-			sc = (struct segment_command_64 *)lc;
-			sect = (struct section_64 *)((char *)sc + sizeof(struct segment_command_64));
-			y = 0;
-			if (sc->nsects != 0)
-			{
-				while (y < sc->nsects)
-				{
-					section_counter += 1;
-					if (section_counter == section_nb)
-					{
-						// reached asked section.
-						if (ft_strcmp(sect->sectname, SECT_DATA) == 0)
-							return ('D');
-						else if (ft_strcmp(sect->sectname, SECT_BSS) == 0)
-							return ('B');
-						else if (ft_strcmp(sect->sectname, SECT_TEXT) == 0)
-							return ('T');
-						else
-							return ('S');
-					}
-					// goto next section;
-					sect = (struct section_64 *)((char *)sect + sizeof(struct section_64));
-					y++;
-				}
-			}
-		}
-		lc = (void *)lc + lc->cmdsize;
+		b->lc = (void *)b->lc + b->lc->cmdsize;
 		i++;
 	}
 	return ('S');
 }
 
-void	fill_outputs_64(t_nm *nm, int nsyms, int symoff, int stroff, char *file_ptr)
+char	get_symbol_type_sectioncmp_64(t_bin64_handler *b, int section_nb)
+{
+	unsigned int		y;
+
+	y = 0;
+	if (b->sc->nsects != 0)
+	{
+		while (y < b->sc->nsects)
+		{
+			b->section_counter += 1;
+			if (b->section_counter == section_nb)
+			{
+				if (ft_strcmp(b->sect->sectname, SECT_DATA) == 0)
+					return ('D');
+				else if (ft_strcmp(b->sect->sectname, SECT_BSS) == 0)
+					return ('B');
+				else if (ft_strcmp(b->sect->sectname, SECT_TEXT) == 0)
+					return ('T');
+				else
+					return ('S');
+			}
+			b->sect = (struct section_64 *)((char *)b->sect
+						+ sizeof(struct section_64));
+			y++;
+		}
+	}
+	return (0);
+}
+
+char	get_symbol_type_64(t_bin64_handler *b, char *file_ptr, int i)
+{
+	char ret;
+
+	ret = 0;
+	if ((b->list[i].n_type & N_TYPE) == N_UNDF)
+	{
+		if (b->list[i].n_value)
+			ret = 'C';
+		else
+			ret = 'U';
+	}
+	else if ((b->list[i].n_type & N_TYPE) == N_ABS)
+		ret = 'A';
+	else if ((b->list[i].n_type & N_TYPE) == N_PBUD)
+		ret = 'U';
+	else if ((b->list[i].n_type & N_TYPE) == N_INDR)
+		ret = 'I';
+	else if ((b->list[i].n_type & N_TYPE) == N_SECT)
+		ret = get_symbol_section_type_64(b, b->list[i].n_sect, file_ptr);
+	if ((b->list[i].n_type & N_STAB) != 0)
+		ret = 'Z';
+	if ((b->list[i].n_type & N_EXT) == 0)
+		ret = ft_tolower(ret);
+	return (ret);
+}
+
+void	fill_outputs_64(t_nm *nm, t_bin64_handler *b, char *file_ptr)
 {
 	t_nm_output					*new_output;
-	int							i;
-	struct nlist_64				*list;
 	char						*string_table;
 	char						output[16];
+	unsigned int				i;
 
-	list = (void *)file_ptr + symoff;
-	string_table = (void *)file_ptr + stroff;
+	b->list = (void *)file_ptr + b->symtab->symoff;
+	string_table = (void *)file_ptr + b->symtab->stroff;
 	i = 0;
 	nm->output_list = NULL;
 	nm->arch_type = 64;
-	while (i < nsyms)
+	while (i < b->symtab->nsyms)
 	{
 		new_output = (t_nm_output *)malloc(sizeof(t_nm_output));
 		new_output->next = NULL;
-
-		// Fill value
-		new_output->sym_value = list[i].n_value;
-		to_hex(output, 16, list[i].n_value);
+		new_output->sym_value = b->list[i].n_value;
+		to_hex(output, 16, b->list[i].n_value);
 		ft_memcpy(new_output->sym_output, output, 16);
-
-		// get type
-		if ((list[i].n_type & N_TYPE) == N_UNDF)
-		{
-			if (list[i].n_value)
-				new_output->sym_type = 'C';
-			else
-				new_output->sym_type = 'U'; // undefined
-		}
-		else if ((list[i].n_type & N_TYPE) == N_ABS)
-			new_output->sym_type = 'A'; // absolute
-		else if ((list[i].n_type & N_TYPE) == N_PBUD)
-			new_output->sym_type = 'U'; // undefined
-		else if ((list[i].n_type & N_TYPE) == N_INDR)
-			new_output->sym_type = 'I';
-		else if ((list[i].n_type & N_TYPE) == N_SECT)
-			new_output->sym_type = get_symbol_section_type_64(list[i].n_sect, file_ptr);
-		if ((list[i].n_type & N_STAB) != 0)
-			new_output->sym_type = 'Z';
-		if ((list[i].n_type & N_EXT) == 0)
-			new_output->sym_type = ft_tolower(new_output->sym_type);
-		new_output->sym_str = ft_strdup(string_table + list[i].n_un.n_strx);
-
-		//if (is_exceptional_global_symbol(nm, new_output->sym_type, new_output->sym_str))
-			//new_output->sym_type = ft_toupper(new_output->sym_type);
-		if (!(new_output->sym_type == 'Z') && !(new_output->sym_type == 'z')) // not adding z stuffs.
+		new_output->sym_type = get_symbol_type_64(b, file_ptr, i);
+		new_output->sym_str = ft_strdup(string_table + b->list[i].n_un.n_strx);
+		if (!(new_output->sym_type == 'Z') && !(new_output->sym_type == 'z'))
 			add_output_to_list(nm, new_output);
 		i++;
 	}
@@ -172,28 +124,23 @@ void	fill_outputs_64(t_nm *nm, int nsyms, int symoff, int stroff, char *file_ptr
 
 void	handle_64(t_nm *nm, char *file_ptr)
 {
-	struct mach_header_64		*file_header;
-	struct symtab_command		*symtab;
-	struct load_command			*lc;
-	int							ncmds;
-	int							i;
-	
-	file_header = (struct mach_header_64 *)file_ptr;
-	ncmds = file_header->ncmds;
-	if (file_header->filetype & MH_DYLIB)
+	t_bin64_handler			b;
+	int						i;
+
+	b.file_header = (struct mach_header_64 *)file_ptr;
+	b.ncmds = b.file_header->ncmds;
+	if (b.file_header->filetype & MH_DYLIB)
 		nm->is_dyld = 1;
-	lc = (void *)file_ptr + sizeof(*file_header); // move past the header.
+	b.lc = (void *)file_ptr + sizeof(*b.file_header);
 	i = 0;
-	// run through all loads commands.
-	while (i < ncmds)
+	while (i < b.ncmds)
 	{
-		// must find symbol tab load command;
-		if (lc->cmd == LC_SYMTAB)
+		if (b.lc->cmd == LC_SYMTAB)
 		{
-			symtab = (struct symtab_command *)lc;
-			fill_outputs_64(nm, symtab->nsyms, symtab->symoff, symtab->stroff, file_ptr);
+			b.symtab = (struct symtab_command *)b.lc;
+			fill_outputs_64(nm, &b, file_ptr);
 		}
-		lc = (void *)lc + lc->cmdsize;
+		b.lc = (void *)b.lc + b.lc->cmdsize;
 		i++;
 	}
 }

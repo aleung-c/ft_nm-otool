@@ -12,28 +12,30 @@
 
 #include "../includes/ft_nm_otool.h"
 
+
+// if archive, print "Archive : lifbt.a"
 void ot_print_from_list(t_nm *nm_list, int i)
 {
 	t_nm *tmp;
 
+	if (i)
+	{}
 	if (nm_list == NULL)
 		return ;
 	tmp = nm_list;
 	//if (i > 2 || (i == 2 && tmp->is_ar == 1))
-	ft_putchar('\n');
+	//ft_putchar('\n');
 	while (tmp)
 	{
-		if (i > 2)
+		// print file name or archive name;
+		if (!tmp->is_ar && !tmp->is_ar_member)
 		{
-			if (!tmp->is_ar && !tmp->is_fat)
-			{
-				ft_putstr(tmp->str_label);
-				ft_putendl(":");
-			}
+			ft_putstr(tmp->str_label);
+			ft_putendl(":");
 		}
 		if (tmp->is_ar)
 		{
-			//nm_print_from_list(tmp->ar_childs, 0);
+			ot_print_from_list(tmp->ar_childs, 0);
 		}
 		if (tmp->is_ar_member)
 		{
@@ -43,21 +45,19 @@ void ot_print_from_list(t_nm *nm_list, int i)
 			ft_putstr(")");
 			ft_putstr(":\n");
 		}
+		ft_putendl("(__TEXT,__text) section");
 		ot_print(tmp);
-		if (tmp->next)
+		//if (tmp->next)
 			ft_putchar('\n');
 		tmp = tmp->next;
 	}
 }
 
-
-// TODO : valeurs se deplacent dans la memoire -> segfault. a check.
 void ot_print(t_nm	*nm)
 {
 	t_ot_output			*tmp;
 	unsigned int		sect_size_counter;
-	unsigned int		sect_max_size;
-	char				buffer[2];
+	char				buffer[16];
 	char				*ptr_to_text;
 
 	if (nm->ot_output_list == NULL)
@@ -65,35 +65,33 @@ void ot_print(t_nm	*nm)
 	else
 	{
 		tmp = nm->ot_output_list;
-		printf("%d\n", tmp->sect_size);
+		//printf("%d\n", tmp->sect_size);
 		while (tmp)
 		{
 			sect_size_counter = 0;
-			sect_max_size = tmp->sect_size;
 			ptr_to_text = tmp->sect_mem;
 			sect_size_counter = 0;
-			while (sect_size_counter < sect_max_size)
+			while (sect_size_counter < tmp->sect_size)
 			{
 				/*ft_putendl("hey ");
 				ft_putnbr(sect_size_counter);
 				ft_putchar('\n');
-				ft_putnbr(sect_max_size);*/
+				ft_putnbr(tmp->sect_size);*/
 				if (sect_size_counter % 16 == 0)
 				{
 					if (sect_size_counter != 0)
 						ft_putchar('\n');
-					// HERE BUG. V V
-					print_format_hex_address(buffer, 16, (unsigned long)((void *)tmp->sect_addr + sect_size_counter));
+					if (nm->arch_type == 64)
+						print_format_hex_address(buffer, 16, (unsigned long)((void *)tmp->sect_addr + sect_size_counter));
+					else
+						print_format_hex_address(buffer, 8, (unsigned long)((void *)tmp->sect_addr + sect_size_counter));
 					ft_putstr(" ");
 				}
 				ft_putnbytes(buffer, 2, *(char *)(ptr_to_text));
 				ft_putchar(' ');
-				//ft_putnbytes(buffer, 16, *(unsigned long *)(ptr_to_text + sizeof(unsigned long)));
-				//ft_putchar('\n');
 				ptr_to_text = (char *)ptr_to_text + 1;
 				sect_size_counter += 1;
 			}
-			ft_putendl("hey");
 			tmp = tmp->next;
 		}
 	}

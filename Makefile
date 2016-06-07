@@ -24,6 +24,7 @@ SRC = ./ft_nm_src/ft_nm.c \
 ./ft_nm_src/handle_ar.c \
 ./ft_nm_src/nm_sort.c \
 ./ft_nm_src/display.c \
+./ft_nm_src/display_utils.c \
 ./utils.c \
 ./utils_symbols.c
 
@@ -31,6 +32,8 @@ SRC2 = ./ft_otool_src/ft_otool.c \
 ./ft_otool_src/otool_entry.c \
 ./ft_otool_src/handle_32_otool.c \
 ./ft_otool_src/handle_64_otool.c \
+./ft_otool_src/handle_fat_otool.c \
+./ft_otool_src/handle_ar_otool.c \
 ./ft_otool_src/display_otool.c \
 ./ft_otool_src/ot_list_utils.c \
 ./utils.c \

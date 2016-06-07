@@ -12,9 +12,8 @@
 
 #include "../includes/ft_nm_otool.h"
 
-void nm_sort(t_nm *nm)
+void	nm_sort(t_nm *nm)
 {
-	// Tri à bulle.
 	t_nm_output		*tmp;
 	t_nm_output		*stock;
 
