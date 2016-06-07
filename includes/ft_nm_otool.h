@@ -195,9 +195,19 @@ int						ft_otool(t_nm *nm_list, char **argv);
 void					otool_entry(t_nm *nm, char *file_ptr);
 
 void					handle_32_otool(t_nm *nm, char *file_ptr);
+void					handle_32_regular_object(t_nm *nm, t_bin32_handler *b,
+								char *file_ptr);
+void					handle_32_regular_section_run(t_nm *nm, t_bin32_handler *b,
+									char *file_ptr);
+void					handle_32_mh_object(t_nm *nm, t_bin32_handler *b, char *file_ptr);
+
 void					fill_ot_output_32(t_nm *nm, struct section *sect, char *ptr_to_text);
 
 void					handle_64_otool(t_nm *nm, char *file_ptr);
+void					handle_64_regular_object(t_nm *nm, t_bin64_handler *b, char *file_ptr);
+void					handle_64_regular_section_run(t_nm *nm, t_bin64_handler *b, char *file_ptr);
+void					handle_64_mh_object(t_nm *nm, t_bin64_handler *b, char *file_ptr);
+
 void					fill_ot_output_64(t_nm *nm, struct section_64 *sect, char *ptr_to_text);
 
 void					handle_fat_otool(t_nm *nm, char *file_ptr);
@@ -222,7 +232,9 @@ void					print_sym_value(t_nm_output *tmp, int arch_type);
 
 void					ot_print_from_list(t_nm *nm_list, int i);
 void					ot_print(t_nm	*tmp);
+void					print_archive_name(t_nm *tmp);
 void					ft_putnbytes(char *buffer, size_t size, unsigned int n);
+
 
 /*
 ** Utils

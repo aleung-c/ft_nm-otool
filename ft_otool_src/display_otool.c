@@ -12,8 +12,6 @@
 
 #include "../includes/ft_nm_otool.h"
 
-
-// if archive, print "Archive : lifbt.a"
 void ot_print_from_list(t_nm *nm_list, int i)
 {
 	t_nm *tmp;
@@ -23,11 +21,10 @@ void ot_print_from_list(t_nm *nm_list, int i)
 	if (nm_list == NULL)
 		return ;
 	tmp = nm_list;
-	//if (i > 2 || (i == 2 && tmp->is_ar == 1))
-	//ft_putchar('\n');
 	while (tmp)
 	{
 		// print file name or archive name;
+		print_archive_name(tmp);
 		if (!tmp->is_ar && !tmp->is_ar_member)
 		{
 			ft_putstr(tmp->str_label);
@@ -53,6 +50,15 @@ void ot_print_from_list(t_nm *nm_list, int i)
 	}
 }
 
+void print_archive_name(t_nm *tmp)
+{
+	if (tmp->is_ar)
+	{
+		ft_putstr("Archive : ");
+		ft_putendl(tmp->str_label);
+	}
+}
+
 void ot_print(t_nm	*nm)
 {
 	t_ot_output			*tmp;
@@ -73,10 +79,6 @@ void ot_print(t_nm	*nm)
 			sect_size_counter = 0;
 			while (sect_size_counter < tmp->sect_size)
 			{
-				/*ft_putendl("hey ");
-				ft_putnbr(sect_size_counter);
-				ft_putchar('\n');
-				ft_putnbr(tmp->sect_size);*/
 				if (sect_size_counter % 16 == 0)
 				{
 					if (sect_size_counter != 0)
