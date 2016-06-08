@@ -25,8 +25,10 @@ SRC = ./ft_nm_src/ft_nm.c \
 ./ft_nm_src/nm_sort.c \
 ./ft_nm_src/display.c \
 ./ft_nm_src/display_utils.c \
-./utils.c \
-./utils_symbols.c
+./common_src/handle_fat_searchers.c \
+./common_src/utils.c \
+./common_src/utils_list.c \
+./common_src/utils_list2.c
 
 SRC2 = ./ft_otool_src/ft_otool.c \
 ./ft_otool_src/otool_entry.c \
@@ -35,9 +37,12 @@ SRC2 = ./ft_otool_src/ft_otool.c \
 ./ft_otool_src/handle_fat_otool.c \
 ./ft_otool_src/handle_ar_otool.c \
 ./ft_otool_src/display_otool.c \
+./ft_otool_src/display_print_otool.c \
 ./ft_otool_src/ot_list_utils.c \
-./utils.c \
-./utils_symbols.c
+./common_src/handle_fat_searchers.c \
+./common_src/utils.c \
+./common_src/utils_list.c \
+./common_src/utils_list2.c
 
 OBJ = $(SRC:.c=.o)
 OBJ2 = $(SRC2:.c=.o)
@@ -69,4 +74,4 @@ fclean : clean
 
 re : fclean all
 
-.PHONY : all clean fclean re
+.PHONY : all clean fclean re Lib

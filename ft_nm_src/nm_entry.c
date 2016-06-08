@@ -44,15 +44,6 @@ int		ft_nm(t_nm *nm_list, char **argv, int i)
 	return (0);
 }
 
-void	print_error(char **argv, int i, int error_type)
-{
-	ft_putstr(argv[i]);
-	if (error_type == 1)
-		ft_putendl(": Is a directory or invalid file.");
-	else if (error_type == 2)
-		ft_putendl(": No such file or directory.");
-}
-
 t_nm	*create_new_nm(char **argv, int i)
 {
 	t_nm		*new_nm;
@@ -65,6 +56,7 @@ t_nm	*create_new_nm(char **argv, int i)
 	new_nm->is_ar_member = 0;
 	new_nm->is_fat = 0;
 	new_nm->is_dyld = 0;
+	new_nm->is_err = 0;
 	return (new_nm);
 }
 
@@ -78,13 +70,23 @@ void	nm_entry(t_nm *nm, char *file_ptr)
 
 	magic_number = *(unsigned int *)file_ptr;
 	if (magic_number == MH_MAGIC)
+	{
 		handle_32(nm, file_ptr);
+	}
 	else if (magic_number == MH_MAGIC_64)
+	{
 		handle_64(nm, file_ptr);
+	}
 	else if (magic_number == FAT_MAGIC)
+	{
 		handle_fat(nm, file_ptr);
+	}
 	else if (magic_number == FAT_CIGAM)
+	{
 		handle_fat_cigam(nm, file_ptr);
+	}
 	else if (ft_memcmp(file_ptr, ARMAG, SARMAG) == 0)
+	{
 		handle_ar(nm, file_ptr);
+	}
 }

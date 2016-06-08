@@ -14,71 +14,53 @@
 
 void	handle_fat_otool(t_nm *nm, char *file_ptr)
 {
-	struct fat_header		*fat_head;
-	struct fat_arch			*fat_arch_struct;
-	unsigned int			i;
-	unsigned int			magic_number;
+	t_fatbin_handler			b;
+	unsigned int				i;
+	unsigned int				narch;
 
 	i = 0;
-	fat_head = (struct fat_header *)file_ptr;
+	b.fat_head = (struct fat_header *)file_ptr;
 	nm->is_fat = 1;
-	fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
-	while (i < fat_head->nfat_arch)
+	b.fat_arch_struct = (void *)b.fat_head + sizeof(*b.fat_head);
+	narch = b.fat_head->nfat_arch;
+	while (i < narch)
 	{
-		magic_number = *(unsigned int *)(void *)file_ptr + (fat_arch_struct->offset);
-		if (magic_number == MH_MAGIC_64)
+		if (search_for_64_arch(&b, ((void *)file_ptr
+					+ b.fat_arch_struct->offset), file_ptr) == 1)
 		{
-			otool_entry(nm, (void *)file_ptr + fat_arch_struct->offset);
+			otool_entry(nm, (void *)file_ptr + b.fat_arch_struct->offset);
 			return ;
 		}
-		fat_arch_struct = (void *)fat_arch_struct + sizeof(*fat_arch_struct);
+		b.fat_arch_struct = (void *)b.fat_arch_struct
+							+ sizeof(*b.fat_arch_struct);
 		i++;
 	}
-	fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
-	otool_entry(nm, (void *)file_ptr + fat_arch_struct->offset);
+	otool_entry(nm, get_valid_arch(&b, file_ptr));
 }
 
 void	handle_fat_cigam_otool(t_nm *nm, char *file_ptr)
 {
-	struct fat_header		*fat_head;
-	struct fat_arch			*fat_arch_struct;
-	unsigned int			i;
-	unsigned int			magic_number;
-	char					*sent_file_ptr;
-
-	struct ar_hdr			*ar_header;
-	unsigned int			ar_size;
-	unsigned int			offset_size;
+	t_fatbin_handler			b;
+	unsigned int				i;
+	unsigned int				narch;
 
 	i = 0;
-	fat_head = (struct fat_header *)file_ptr;
+	b.fat_head = (struct fat_header *)file_ptr;
 	nm->is_fat = 1;
-	fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
-	while (i < swap32(fat_head->nfat_arch))
+	b.fat_arch_struct = (void *)b.fat_head + sizeof(*b.fat_head);
+	narch = (swap32(b.fat_head->nfat_arch));
+	while (i < narch)
 	{
-		sent_file_ptr = (void *)file_ptr + swap32(fat_arch_struct->offset);
-		magic_number = *(unsigned int *)sent_file_ptr;
-		if (magic_number == MH_MAGIC_64)
+		if (search_for_64_arch_cigam(&b, ((void *)file_ptr
+					+ swap32(b.fat_arch_struct->offset)), file_ptr) == 1)
 		{
-			otool_entry(nm, sent_file_ptr);
+			otool_entry(nm, (void *)file_ptr
+						+ (swap32(b.fat_arch_struct->offset)));
 			return ;
 		}
-		else if (ft_memcmp(sent_file_ptr, ARMAG, SARMAG) == 0)
-		{
-			ar_header = (void *)sent_file_ptr + SARMAG;
-			ar_size = str_to_int(ar_header->ar_size);
-			offset_size = str_to_int((void *)ar_header + 3);
-			ar_header = (void *)ar_header + sizeof(*ar_header) + ar_size;
-			magic_number = *(unsigned int *)((void *)ar_header + sizeof(*ar_header) + offset_size);
-			if (magic_number == MH_MAGIC_64)
-			{
-				otool_entry(nm, sent_file_ptr);
-				return ;
-			}
-		}
-		fat_arch_struct = (void *)fat_arch_struct + sizeof(*fat_arch_struct);
+		b.fat_arch_struct = (void *)b.fat_arch_struct
+							+ sizeof(*b.fat_arch_struct);
 		i++;
 	}
-	fat_arch_struct = (void *)fat_head + sizeof(*fat_head);
-	otool_entry(nm, (void *)file_ptr + (swap32(fat_arch_struct->offset)));
+	otool_entry(nm, get_valid_arch_cigam(&b, file_ptr));
 }

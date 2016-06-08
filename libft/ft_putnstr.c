@@ -14,10 +14,13 @@
 
 void	ft_putnstr(char const *str, int n)
 {
-  while (n != 0)
-    {
-      write(1, str, 1);
-      str++;
-      n--;
-    }
+	int i;
+
+	i = 0;
+	while (n != 0 && str[i])
+	{
+		i++;
+		n--;
+	}
+	write(1, str, i);
 }

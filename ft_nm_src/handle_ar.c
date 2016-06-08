@@ -16,12 +16,15 @@ void		handle_ar(t_nm *nm, char *file_ptr)
 {
 	t_nm				*ar_child;
 	t_ar_handler		a;
+	unsigned int		i;
+	unsigned int		ranlib_nb;
 
 	nm->is_ar = 1;
 	nm->ar_childs = NULL;
+	i = 0;
 	init_ar_handler(&a, file_ptr);
-	while (a.i < (a.total_size_of_hdrs / sizeof(struct ranlib))
-		&& *((char *)a.ar_header) == '#')
+	ranlib_nb = a.total_size_of_hdrs / sizeof(struct ranlib);
+	while (i < ranlib_nb && *((char *)a.ar_header) == '#')
 	{
 		a.name = (char *)a.ar_header + sizeof(struct ar_hdr);
 		a.ar_size = str_to_int(a.ar_header->ar_size);
@@ -32,18 +35,14 @@ void		handle_ar(t_nm *nm, char *file_ptr)
 			nm_entry(ar_child, ar_child->file_ptr);
 		}
 		else
-		{
-			free(ar_child->str_label);
-			free(ar_child);
-		}
+			free_unused_child(ar_child);
 		a.ar_header = (void *)a.ar_header + sizeof(*a.ar_header) + a.ar_size;
-		a.i++;
+		i++;
 	}
 }
 
 void		init_ar_handler(t_ar_handler *a, char *file_ptr)
 {
-	a->i = 0;
 	a->ar_header = (void *)file_ptr + SARMAG;
 	a->name = (char *)a->ar_header + sizeof(struct ar_hdr);
 	a->offset_size = str_to_int((void *)a->ar_header + 3);

@@ -43,7 +43,6 @@ void	handle_32_otool(t_nm *nm, char *file_ptr)
 	{
 		handle_32_regular_object(nm, &b, file_ptr);
 	}
-	// TODO : error check
 }
 
 void	handle_32_regular_object(t_nm *nm, t_bin32_handler *b,
