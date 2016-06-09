@@ -53,10 +53,10 @@ CC = gcc -g -Wall -Werror -Wextra
 
 all : Lib $(NAME1) $(NAME2)
 
-$(NAME2) : $(OBJ2) Lib
-	$(CC) -o $(NAME2) $(OBJ2) -L./libft/ -lft
+$(NAME2) : $(OBJ2)
+	$(CC) -o $(NAME2) $(OBJ2) -L./libft/ -lft	
 
-$(NAME1) : $(OBJ) Lib
+$(NAME1) : $(OBJ)
 	$(CC) -o $(NAME1) $(OBJ) -L./libft/ -lft
 
 Lib :
