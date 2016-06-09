@@ -42,10 +42,10 @@ void			to_hex(char *buffer, size_t size, unsigned n)
 
 unsigned int	swap32(unsigned int x)
 {
-	return	((x << 24) & 0xff000000 ) |
-		((x <<  8) & 0x00ff0000) |
-		((x >>  8) & 0x0000ff00) |
-		((x >> 24) & 0x000000ff);
+	return ((x << 24) & 0xff000000) |
+	((x << 8) & 0x00ff0000) |
+	((x >> 8) & 0x0000ff00) |
+	((x >> 24) & 0x000000ff);
 }
 
 int				str_to_int(char *val)

@@ -14,12 +14,11 @@
 
 void		free_unused_child(t_nm *ar_child)
 {
-		free(ar_child->str_label);
-		free(ar_child);
+	free(ar_child->str_label);
+	free(ar_child);
 }
 
-
-int 		check_is_nm_doublon(t_nm *new_nm, t_nm *nm_list)
+int			check_is_nm_doublon(t_nm *new_nm, t_nm *nm_list)
 {
 	t_nm		*tmp;
 
@@ -33,7 +32,7 @@ int 		check_is_nm_doublon(t_nm *new_nm, t_nm *nm_list)
 	return (0);
 }
 
-int				is_magicn_handled(void *sent_ptr)
+int			is_magicn_handled(void *sent_ptr)
 {
 	unsigned int magic_n;
 
