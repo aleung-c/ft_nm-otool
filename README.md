@@ -5,3 +5,5 @@ This repository is an implementation of nm and otool unix executable in C, which
 the code through compiled executables. The most interesting part of this project lies in the understanding of
 unix executable. We can see through the recreation of these executable "how" those files have been made,
 by digging into very old include files, and casting a compiled memory -that seems unreadable- into actual sensible content.
+
+![Alt text](./cover/ft_nm_otool_screen1.jpg "ft nm otool screenshot 1")
